@@ -3,6 +3,8 @@
 namespace App\Controllers;
 
 use CodeIgniter\RESTful\ResourceController;
+use CodeIgniter\API\ResponseTrait;
+use App\Models\ProductModel;
 
 class Products extends ResourceController
 {
@@ -11,9 +13,12 @@ class Products extends ResourceController
      *
      * @return mixed
      */
+    use ResponseTrait;
     public function index()
     {
-        //
+        $model = new ProductModel();
+        $data = $model->findAll();
+        return $this->respond($data);
     }
 
     /**
@@ -23,17 +28,10 @@ class Products extends ResourceController
      */
     public function show($id = null)
     {
-        //
-    }
-
-    /**
-     * Return a new resource object, with default properties
-     *
-     * @return mixed
-     */
-    public function new()
-    {
-        //
+        $model = new ProductModel();
+        $data = $model->find(['id' => $id]);
+        if(!$data) return $this->failNotFound('No Data Founds');
+        return $this->respond($data[0]);
     }
 
     /**
@@ -43,17 +41,20 @@ class Products extends ResourceController
      */
     public function create()
     {
-        //
-    }
-
-    /**
-     * Return the editable properties of a resource object
-     *
-     * @return mixed
-     */
-    public function edit($id = null)
-    {
-        //
+        $data = [
+            'title' => $this->request->getVar('title'),
+            'price' => $this->request->getVar('price')
+        ];
+        $model = new ProductModel();
+        $model->save($data);
+        $response = [
+            'status' => 201,
+            'error' => null,
+            'messages' => [
+                'success' => 'Data Inserted'
+            ]
+        ];
+        return $this->respondCreated($response);
     }
 
     /**
