@@ -1,5 +1,5 @@
 <?php
-
+// CONTROLLER
 namespace App\Controllers;
 
 use CodeIgniter\RESTful\ResourceController;
@@ -41,10 +41,16 @@ class Products extends ResourceController
      */
     public function create()
     {
+        helper(['form']);
+        $rules = [
+            'title' => 'required',
+            'price' => 'required'
+        ];
         $data = [
             'title' => $this->request->getVar('title'),
             'price' => $this->request->getVar('price')
         ];
+        if(!$this->validate($rules)) return $this->fail($this->validator->getErrors());
         $model = new ProductModel();
         $model->save($data);
         $response = [
@@ -64,7 +70,26 @@ class Products extends ResourceController
      */
     public function update($id = null)
     {
-        //
+        helper(['form']);
+        $rules = [
+            'title' => 'required',
+            'price' => 'required'
+        ];
+        $data = [
+            'title' => $this->request->getVar('title'),
+            'price' => $this->request->getVar('price')
+        ];
+        if(!$this->validate($rules)) return $this->fail($this->validator->getErrors());
+        $model = new ProductModel();
+        $model->update($id, $data);
+        $response = [
+            'status' => 200,
+            'error' => null,
+            'messages' => [
+                'success' => 'Data Updated'
+            ]
+        ];
+        return $this->respond($response);
     }
 
     /**
@@ -74,6 +99,17 @@ class Products extends ResourceController
      */
     public function delete($id = null)
     {
-        //
+        $model = new ProductModel();
+        $findById = $model->find(['id' => $id]);
+        if(!$findById) return $this->failNotFound('No Data Found');
+        $model->delete($id);
+        $responsible = [
+            'status' => 200,
+            'error' => null,
+            'messages' => [
+                'success' => 'Data Deleted'
+            ]
+        ];
+        return $this->respond($responsible);
     }
 }
