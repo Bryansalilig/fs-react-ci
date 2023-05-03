@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import axios  from 'axios';
 
@@ -19,9 +20,7 @@ const AddProduct = () => {
         .then((response) => {
             navigate('/');
         })
-        .catch((err) => {
-            console.log(err)
-         });
+
     }
   return (
     <div>
@@ -31,17 +30,18 @@ const AddProduct = () => {
                 <input type='text' className='input'
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder='Title'/>
+                placeholder='Title' required/>
                 </div>
             <div className='field'>
                 <label className='label'>Price</label>
                 <input type='text' className='input'
                    value={price}
                    onChange={(e) => setPrice(e.target.value)}
-                placeholder='Price'/>
+                placeholder='Price' required/>
                 </div>
             <div className='field'>
-                <button className='button is-primary'>Save </button>
+            <Link to={'/'} className='button is-danger'>Back</Link>
+                <button className='button is-primary' style={{marginLeft: "20px"}}>Save </button>
                 </div>
         </form>
     </div>
